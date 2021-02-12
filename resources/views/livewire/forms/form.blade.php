@@ -20,7 +20,7 @@
 
         <div class="sm_w-full lg:w-1/2 mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="periodo">
-                @error('periodo')<strong class="text-red-700 font-bold">Requerido</strong>@else Períodos de Pago o Cobro @enderror
+                @error('periodo')<strong class="text-red-700 font-bold">Requerido</strong>@else Períodos @enderror
             </label>
             <select wire:model="periodo" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="periodo" id="periodo" type="periodo" required="">
                 <option value="">Seleccione</option>

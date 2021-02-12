@@ -23,7 +23,41 @@ class CalcularPrestamo extends Component
             'tasa' => 'required|numeric',
             'plazo' => 'required|numeric',
         ]);
-        $this->reset('cuotas');
+        if ($this->calculado) {
+            $this->reset('cuotas');
+        }
+        
+        //tasa según el período
+        switch ($this->periodo) {
+            case 'Mensual':
+                $this->tasaConvertida = $this->tasa / 12 / 100;
+                break;
+            case 'Bimestral':
+                $this->tasaConvertida = $this->tasa / 6 / 100;
+                break;
+            case 'Trimestral':
+                $this->tasaConvertida = $this->tasa / 4 / 100;
+                break;
+            case 'Semestral':
+                $this->tasaConvertida = $this->tasa / 2 / 100;
+                break;
+            case 'Diario':
+                $this->tasaConvertida = $this->tasa / 360 / 100;
+                break;
+            
+            default:
+                $this->tasaConvertida = $this->tasa / 100;
+                break;
+        }
+
+        $this->capital = $this->monto;
+        //calcular cuota método francés a=Co ( i / 1 - (1 + i)n)
+        // (1+i)n
+        $divisor = 1 - pow(1 + $this->tasaConvertida, -$this->plazo);
+        // i / 1 - (1 + i)n
+        $factor = $this->tasaConvertida / $divisor;
+        $this->cuota = $this->monto * $factor;
+        $this->calculado = true;
         switch ($this->sistema) {
             case 'Aleman':
                 $this->sistAleman();
@@ -36,36 +70,6 @@ class CalcularPrestamo extends Component
                 $this->sistFrances();
                 break;
         }
-                //tasa según el período
-                switch ($this->periodo) {
-                    case 'Mensual':
-                        $this->tasaConvertida = $this->tasa / 12 / 100;
-                        break;
-                    case 'Bimestral':
-                        $this->tasaConvertida = $this->tasa / 6 / 100;
-                        break;
-                    case 'Trimestral':
-                        $this->tasaConvertida = $this->tasa / 4 / 100;
-                        break;
-                    case 'Semestral':
-                        $this->tasaConvertida = $this->tasa / 2 / 100;
-                        break;
-                    case 'Diario':
-                        $this->tasaConvertida = $this->tasa / 360 / 100;
-                        break;
-                    
-                    default:
-                        $this->tasaConvertida = $this->tasa / 100;
-                        break;
-                }
-                $this->capital = $this->monto;
-                //calcular cuota método francés a=Co ( i / 1 - (1 + i)n)
-                // (1+i)n
-                $divisor = 1 - pow(1 + $this->tasaConvertida, -$this->plazo);
-                // i / 1 - (1 + i)n
-                $factor = $this->tasaConvertida / $divisor;
-                $this->cuota = $this->monto * $factor;
-                $this->calculado = true;
         
     }
     public function sistFrances(){
@@ -106,7 +110,7 @@ class CalcularPrestamo extends Component
                 'numero' => ($i),
                 'cuota' => number_format($this->capital * $this->tasaConvertida, 2, ',', '.'),
                 'interes' => number_format($this->capital * $this->tasaConvertida, 2, ',', '.'), 
-                'amortizado' => number_format($this->capital , 2, ',', '.'),
+                'amortizado' => number_format(0 , 2, ',', '.'),
                 'vivo' => number_format($this->capital, 2, ',', '.')
             ];
             }else{
