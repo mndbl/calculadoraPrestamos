@@ -7,7 +7,7 @@
             <option value="">Seleccione</option>
             <option value="Frances">Francés</option>
             <option value="Aleman">Alemán</option>
-            <option value="EEUU">EEUU</option>
+            <option value="EEUU">Americano</option>
         </select>
     </div>
     <div class="sm:block lg:flex gap-2">
