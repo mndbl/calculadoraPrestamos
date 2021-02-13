@@ -4,7 +4,7 @@
             @error('sistema')<strong class="text-red-700 font-bold">Requerido</strong>@else Sistema de Cálculo @enderror
         </label>
         <select wire:model="sistema" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" name="periodo" id="periodo" type="periodo" required="">
-            <option value="">Seleccione</option>
+            <option selected>Seleccione</option>
             <option value="Frances">Francés</option>
             <option value="Aleman">Alemán</option>
             <option value="EEUU">Americano</option>

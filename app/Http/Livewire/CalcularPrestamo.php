@@ -49,17 +49,19 @@ class CalcularPrestamo extends Component
         }
 
         $this->capital = $this->monto;
-        //calcular cuota método francés a=Co ( i / 1 - (1 + i)n)
+        //calcular cuota método francés a=Co ( i / 1 - (1 + i)-n)
         // (1+i)n
         $divisor = 1 - pow(1 + $this->tasaConvertida, -$this->plazo);
         // i / 1 - (1 + i)n
-        $factor = $this->tasaConvertida / $divisor;
+        $factor = ($this->tasaConvertida / $divisor);
+        
         $this->cuota = $this->monto * $factor;
         $this->calculado = true;
         switch ($this->sistema) {
             case 'Aleman':
                 $this->sistAleman();
                 break;
+
             case 'EEUU':
                 $this->sistEEUU();
                 break;
@@ -67,10 +69,38 @@ class CalcularPrestamo extends Component
            case 'Frances':
                 $this->sistFrances();
                 break;
+
+           case 'Frances2':
+                $this->sistFrances2();
+                break;
         }
         
     }
     public function sistFrances(){
+        //construir tabla
+        for ($i=1; $i < $this->plazo + 1; $i++) { 
+            $this->cuotas[$i] = [
+                'numero' => ($i),
+                'cuota' => number_format($this->cuota, 2, ',', '.'),
+                'interes' => number_format($this->capital * $this->tasaConvertida, 2, ',', '.'), 
+                'amortizado' => number_format($amortizado = $this->cuota - ($this->capital * $this->tasaConvertida) , 2, ',', '.'),
+                'vivo' => number_format($this->capital = $this->capital - $amortizado , 2, ',', '.')
+            ];
+        }
+        $this->intGen = $this->cuota * $this->plazo - $this->monto;        
+        $this->totalGen = $this->cuota * $this->plazo;        
+    }
+    public function sistFrances2(){
+        //calcular cuota método francés a=Co ( i x (1 + i)n / (1 + i)n - 1)
+        //i x (1 + i)n
+        $numerador = $this->tasaConvertida * pow(1 + $this->tasaConvertida, $this->plazo);
+        // (1+i)n - 1
+        $denominador = pow(1 + $this->tasaConvertida, $this->plazo) - 1;
+        // i x (1 + i)n / (1 + i)n - 1
+        $factor = $numerador / $denominador;
+        
+        $this->cuota = $this->monto * $factor;
+        $this->calculado = true;
         //construir tabla
         for ($i=1; $i < $this->plazo + 1; $i++) { 
             $this->cuotas[$i] = [
