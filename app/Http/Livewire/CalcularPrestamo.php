@@ -23,9 +23,7 @@ class CalcularPrestamo extends Component
             'tasa' => 'required|numeric',
             'plazo' => 'required|numeric',
         ]);
-        if ($this->calculado) {
-            $this->reset('cuotas');
-        }
+        $this->reset('cuotas');
         
         //tasa según el período
         switch ($this->periodo) {
@@ -128,7 +126,7 @@ class CalcularPrestamo extends Component
     }
     public function borrar(){
         $this->reset([
-            'monto', 'periodo', 'tasa', 'plazo', 'calculado'
+            'monto', 'periodo', 'tasa', 'plazo', 'calculado', 
         ]);
     }
 }
